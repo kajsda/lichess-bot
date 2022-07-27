@@ -3,7 +3,7 @@ url: "https://lichess.org/"  # Lichess base URL.
 
 engine:                      # Engine settings.
   dir: "./engines/"          # Directory containing the engine. This can be an absolute path or one relative to lichess-bot/.
-  name: "stockfish15"        # Binary name of the engine to use.
+  name: "stockfish"        # Binary name of the engine to use.
   working_dir: ""            # Directory where the chess engine will read and write files. If blank or missing, the current directory is used.
   protocol: "uci"            # "uci" or "xboard"
   ponder: true               # Think on opponent's time.
@@ -12,15 +12,15 @@ engine:                      # Engine settings.
     book:
       standard:              # List of book file paths for variant standard.
         - engines/books/Goi5.1.bin
-        - engines/books/Drawkiller_EloZoom_big.bin
+        - cubail.bin
 #     atomic:                # List of book file paths for variant atomic.
 #       - engines/atomicbook1.bin
 #       - engines/atomicbook2.bin
 #     etc.
 #     Use the same pattern for 'giveaway' (antichess), 'crazyhouse', 'horde', 'kingofthehill', 'racingkings' and '3check' as well.
     min_weight: 1            # Does not select moves with weight below min_weight (min 0, max: 65535).
-    selection: "weighted_random" # Move selection is one of "weighted_random", "uniform_random" or "best_move" (but not below the min_weight in the 2nd and 3rd case).
-    max_depth: 8             # Half move max depth.
+    selection: "best_move" # Move selection is one of "weighted_random", "uniform_random" or "best_move" (but not below the min_weight in the 2nd and 3rd case).
+#   max_depth: 8             # Half move max depth.
   draw_or_resign:
     resign_enabled: true
     resign_score: -1000      # If the score is less than or equal to this value, the bot resigns (in cp).
@@ -33,15 +33,15 @@ engine:                      # Engine settings.
     offer_draw_pieces: 10    # Only if the pieces on board are less than or equal to this value, the bot offers/accepts draw.
   online_moves:
     chessdb_book:
-      enabled: true
+      enabled: false
       min_time: 20
       move_quality: "good"   # One of "all", "good", "best".
       min_depth: 20          # Only for move_quality: "best".
       contribute: true
     lichess_cloud_analysis:
-      enabled: true
+      enabled: false
       min_time: 20
-      move_quality: "good"   # One of "good", "best".
+      move_quality: "best"   # One of "good", "best".
       max_score_difference: 50 # Only for move_quality: "good". The maximum score difference (in cp) between the best move and the other moves.
       min_depth: 20
       min_knodes: 0
@@ -56,9 +56,14 @@ engine:                      # Engine settings.
   homemade_options:
 #   Hash: 256
   uci_options:               # Arbitrary UCI options passed to the engine.
-    Move Overhead: 2000      # Increase if your bot flags games too often.
-    Threads: 2               # Max CPU threads the engine can use.
+    Move Overhead: 100       # Increase if your bot flags games too often.
+    Ponder: true
+    Threads: 20              # Max CPU threads the engine can use.
     Hash: 256                # Max memory (in megabytes) the engine can allocate.
+    Slow Mover: 80
+    nodestime: 0
+    MultiPV: 1
+    Skill Level: 20
 #   go_commands:             # Additional options to pass to the UCI go command.
 #     nodes: 1               # Search so many nodes only.
 #     depth: 5               # Search depth ply only.
@@ -85,7 +90,7 @@ correspondence:
     move_time: 60            # Time in seconds to search in correspondence games.
     checkin_period: 600      # How often to check for opponent moves in correspondence games after disconnecting.
     disconnect_time: 300     # Time before disconnecting from a correspondence game.
-    ponder: false            # Ponder in correspondence games the bot is connected to.
+    ponder: true             # Ponder in correspondence games the bot is connected to.
 
 challenge:                   # Incoming challenges.
   concurrency: 1             # Number of games to play simultaneously.
@@ -93,12 +98,12 @@ challenge:                   # Incoming challenges.
   accept_bot: true           # Accepts challenges coming from other bots.
   only_bot: false            # Accept challenges by bots only.
   max_increment: 180         # Maximum amount of increment to accept a challenge. The max is 180. Set to 0 for no increment.
-  min_increment: 0           # Minimum amount of increment to accept a challenge.
+  min_increment: 1           # Minimum amount of increment to accept a challenge.
   max_base: 315360000        # Maximum amount of base time to accept a challenge. The max is 315360000 (10 years).
-  min_base: 0                # Minimum amount of base time to accept a challenge.
+  min_base: 1                # Minimum amount of base time to accept a challenge.
   variants:                  # Chess variants to accept (https://lichess.org/variant).
     - standard
-    - fromPosition
+#   - fromPosition
 #   - antichess
 #   - atomic
     - chess960
@@ -122,7 +127,7 @@ greeting:
     #   {opponent} to insert opponent's name
     #   {me} to insert bot's name
     # Any other words in curly braces will be removed.
-    hello: "Hi! I'm {me}. Good luck! Type !help for a list of commands I can respond to." # Message to send to chat at the start of a game
+    hello: "Hi! I'm {me}. A Bot Without Love" # Message to send to chat at the start of a game
     goodbye: "Good game!" # Message to send to chat at the end of a game
 
 # pgn_directory: "game_records" # A directory where PGN-format records of the bot's games are kept
